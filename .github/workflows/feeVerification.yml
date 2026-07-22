@@ -27,7 +27,6 @@ jobs:
   fee-verification:
 
     runs-on: ubuntu-latest
-
     timeout-minutes: 30
 
     defaults:
@@ -35,6 +34,7 @@ jobs:
         working-directory: ims-fee-verification-suite
 
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -42,7 +42,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
           cache: maven
 
       - name: Setup Chrome
@@ -83,23 +83,23 @@ jobs:
           path: ims-fee-verification-suite/logs/
           if-no-files-found: ignore
           retention-days: 14
-          
+
       - name: Debug Surefire Reports
-      if: always()
-      run: |
-       echo "Current Directory:"
-       pwd
+        if: always()
+        run: |
+          echo "Current Directory:"
+          pwd
 
-       echo "Listing target folder"
-       ls -R ims-fee-verification-suite/target || true
+          echo "Listing target folder"
+          ls -R target || true
 
-       echo "Listing surefire reports"
-       ls -R ims-fee-verification-suite/target/surefire-reports || true
+          echo "Listing surefire reports"
+          ls -R target/surefire-reports || true
 
-       echo "Print XML files"
-       find ims-fee-verification-suite/target -name "*.xml" || true
-       
-       - name: Publish Test Summary
+          echo "Printing XML files"
+          find target -name "*.xml" || true
+
+      - name: Publish Test Summary
         if: always()
         uses: dorny/test-reporter@v1
         with:
