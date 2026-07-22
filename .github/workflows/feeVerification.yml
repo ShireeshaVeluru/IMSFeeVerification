@@ -84,8 +84,23 @@ jobs:
           path: ims-fee-verification-suite/logs/
           if-no-files-found: ignore
           retention-days: 14
+          
+      - name: Debug Surefire Reports
+      if: always()
+      run: |
+       echo "Current Directory:"
+       pwd
 
-      - name: Publish Test Summary
+       echo "Listing target folder"
+       ls -R ims-fee-verification-suite/target || true
+
+       echo "Listing surefire reports"
+       ls -R ims-fee-verification-suite/target/surefire-reports || true
+
+       echo "Print XML files"
+       find ims-fee-verification-suite/target -name "*.xml" || true
+       
+       - name: Publish Test Summary
         if: always()
         uses: dorny/test-reporter@v1
         with:
