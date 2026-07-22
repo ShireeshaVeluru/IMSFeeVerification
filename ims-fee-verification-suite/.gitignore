@@ -1,0 +1,17 @@
+# Build output
+target/
+
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+
+# Generated at runtime — don't commit these
+reports/
+screenshots/
+logs/
+
+# OS/editor noise
+.DS_Store
+*.swp

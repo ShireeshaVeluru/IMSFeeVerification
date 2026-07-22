@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IMS Fee Verification — Sample Execution Report</title>
+<style>
+  :root {
+    --ink: #1a2332;
+    --muted: #5b6675;
+    --border: #e2e6ea;
+    --bg: #f7f8fa;
+    --pass: #1e7e4f;
+    --pass-bg: #e8f5ee;
+    --fail: #b3261e;
+    --fail-bg: #fdecea;
+    --accent: #1f4e79;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', -apple-system, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  header {
+    background: var(--accent);
+    color: white;
+    padding: 28px 40px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+  header p { margin: 0; color: #cfe0ef; font-size: 13px; }
+  .meta-bar {
+    display: flex;
+    gap: 28px;
+    padding: 14px 40px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .meta-bar strong { color: var(--ink); }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 16px 40px 0;
+    background: var(--bg);
+  }
+  .tab {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    background: #eceff2;
+    color: var(--muted);
+  }
+  .tab.active {
+    background: white;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .panel {
+    background: white;
+    margin: 0 40px 40px;
+    border: 1px solid var(--border);
+    border-radius: 0 8px 8px 8px;
+    padding: 24px 28px 28px;
+  }
+  .panel h2 { font-size: 16px; margin: 0 0 4px; }
+  .panel .sub { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+  .stat-row { display: flex; gap: 14px; margin-bottom: 20px; }
+  .stat {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat .num { font-size: 24px; font-weight: 700; }
+  .stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  .stat.pass .num { color: var(--pass); }
+  .stat.fail .num { color: var(--fail); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #f2f4f6;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+  .badge.pass { background: var(--pass-bg); color: var(--pass); }
+  .badge.fail { background: var(--fail-bg); color: var(--fail); }
+  .badge.category-defect { background: #fff4e0; color: #9a5c00; }
+  .badge.category-discrepancy { background: var(--fail-bg); color: var(--fail); }
+  .delta { font-weight: 700; }
+  .delta.up { color: var(--fail); }
+  .mono { font-family: 'Consolas', monospace; font-size: 12.5px; }
+  .note {
+    margin-top: 18px;
+    padding: 12px 16px;
+    background: #f2f7fc;
+    border-left: 3px solid var(--accent);
+    font-size: 12.5px;
+    color: var(--muted);
+    border-radius: 0 6px 6px 0;
+  }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>IMS Program Fee Verification — Execution Report</h1>
+  <p>Run #482 · QA environment · Nightly full-catalog run</p>
+</header>
+
+<div class="meta-bar">
+  <div><strong>Date:</strong> 22 Jul 2026, 02:00 UTC</div>
+  <div><strong>Duration:</strong> 3m 41s</div>
+  <div><strong>Environment:</strong> qa</div>
+  <div><strong>Total Cases:</strong> 4</div>
+  <div><strong>Trigger:</strong> Scheduled (nightly)</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active">Engineering / QA View</div>
+  <div class="tab">Stakeholder Digest</div>
+</div>
+
+<div class="panel">
+  <h2>Engineering / QA View</h2>
+  <p class="sub">Full detail for triage — every result, categorized, with logs and screenshots available per row.</p>
+
+  <div class="stat-row">
+    <div class="stat pass"><div class="num">2</div><div class="label">Passed</div></div>
+    <div class="stat fail"><div class="num">1</div><div class="label">Fee Discrepancy</div></div>
+    <div class="stat fail"><div class="num">1</div><div class="label">Automation Defect</div></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Program</th><th>Batch</th><th>Result</th><th>Category</th><th>Details</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SimCAT Core 2025</td>
+        <td>batch cv</td>
+        <td><span class="badge pass">PASS</span></td>
+        <td>—</td>
+        <td class="mono">Displayed ₹56000 = Expected ₹56000</td>
+      </tr>
+      <tr>
+        <td>SimCAT Core 2025</td>
+        <td>Test Batch 21</td>
+        <td><span class="badge fail">FAIL</span></td>
+        <td><span class="badge category-discrepancy">Fee Discrepancy</span></td>
+        <td class="mono">AssertionError: Fee mismatch | Program: SimCAT Core 2025 | Batch: Test Batch 21 | Displayed: 75000 | Expected: 72000<br>
+        <a href="#">screenshot_verifyFee_20260722_020134.png</a></td>
+      </tr>
+      <tr>
+        <td>SimCAT Max 2025</td>
+        <td>CAT25E-Online-WD11</td>
+        <td><span class="badge pass">PASS</span></td>
+        <td>—</td>
+        <td class="mono">Displayed ₹300000 = Expected ₹300000</td>
+      </tr>
+      <tr>
+        <td>SimCAT Max 2025</td>
+        <td>IMS Batch 1</td>
+        <td><span class="badge fail">FAIL</span></td>
+        <td><span class="badge category-defect">Automation Defect</span></td>
+        <td class="mono">TimeoutException: batch card not visible after 15s<br>
+        <a href="#">screenshot_verifyFee_20260722_020211.png</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    QA triage note: 1 of 2 failures is a genuine pricing mismatch (blocks release); the other is
+    an element-timeout, most likely a transient page-load issue in this run rather than a
+    product defect — re-run before escalating.
+  </div>
+</div>
+
+<div class="panel" style="margin-top:-20px;">
+  <h2>Stakeholder Digest — Product / Pricing Team</h2>
+  <p class="sub">Only genuine fee discrepancies. No test-infrastructure noise, no pass counts — just what needs a pricing decision.</p>
+
+  <table>
+    <thead>
+      <tr><th>Program</th><th>Batch</th><th>Expected Fee</th><th>Displayed Fee</th><th>Delta</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SimCAT Core 2025</td>
+        <td>Test Batch 21</td>
+        <td class="mono">₹72,000</td>
+        <td class="mono">₹75,000</td>
+        <td class="delta up mono">+₹3,000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    1 pricing discrepancy found across 4 batches checked tonight. Sent automatically to
+    #pricing-alerts — no action needed from QA unless Product confirms this is unexpected.
+  </div>
+</div>
+
+<footer>Generated by IMS Fee Verification Suite · Sample report for Test Strategy Document — not a live run</footer>
+
+</body>
+</html>
