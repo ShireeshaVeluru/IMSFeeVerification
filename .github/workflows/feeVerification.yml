@@ -1,0 +1,95 @@
+name: IMS Fee Verification Suite
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  schedule:
+    - cron: '0 2 * * *'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target Environment
+        required: true
+        default: qa
+        type: choice
+        options:
+          - qa
+          - staging
+          - prod
+
+env:
+  TARGET_ENV: ${{ github.event.inputs.environment || 'qa' }}
+
+jobs:
+  fee-verification:
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        working-directory: ims-fee-verification-suite
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Create Output Folders
+        run: |
+          mkdir -p reports
+          mkdir -p screenshots
+          mkdir -p logs
+
+      - name: Run Fee Verification Suite
+        run: mvn -B clean test -Denv=${{ env.TARGET_ENV }}
+
+      - name: Upload Extent Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extent-report-${{ env.TARGET_ENV }}
+          path: ims-fee-verification-suite/reports/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-${{ env.TARGET_ENV }}
+          path: ims-fee-verification-suite/screenshots/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-logs-${{ env.TARGET_ENV }}
+          path: ims-fee-verification-suite/logs/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Publish Test Summary
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Fee Verification Results (${{ env.TARGET_ENV }})
+          path: ims-fee-verification-suite/target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: false
