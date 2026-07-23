@@ -101,6 +101,7 @@ jobs:
 
       - name: Publish Test Summary
         if: always()
+        continue-on-error: true          
         uses: dorny/test-reporter@v1
         with:
           name: Fee Verification Results (${{ env.TARGET_ENV }})
