@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Target Environment
+        description: Environment
         required: true
         default: qa
         type: choice
@@ -47,9 +47,7 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # v1 -> v2: v1 still ships a Node 20 runtime, which triggers the
-      # "Node.js 20 is deprecated" warning now that Actions defaults to
-      # Node 24.
+    
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v2
 
@@ -108,10 +106,10 @@ jobs:
           RESULTS_FILE="target/surefire-reports/testng-results.xml"
 
           if [ -f "$RESULTS_FILE" ]; then
-            TOTAL=$(grep -oP 'total="\K[0-9]+' "$RESULTS_FILE" | head -1)
-            PASSED=$(grep -oP 'passed="\K[0-9]+' "$RESULTS_FILE" | head -1)
-            FAILED=$(grep -oP 'failed="\K[0-9]+' "$RESULTS_FILE" | head -1)
-            SKIPPED=$(grep -oP 'skipped="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            TOTAL=$(grep -oP 'Total="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            PASSED=$(grep -oP 'Passed="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            FAILED=$(grep -oP 'Failed="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            SKIPPED=$(grep -oP 'Skipped="\K[0-9]+' "$RESULTS_FILE" | head -1)
           else
             TOTAL=0; PASSED=0; FAILED=0; SKIPPED=0
           fi
