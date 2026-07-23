@@ -71,14 +71,22 @@ public class TestListener implements ITestListener {
 
             if (DriverFactory.getDriver() != null) {
 
-                String screenshotPath =
+                ScreenshotUtility.Capture capture =
                         ScreenshotUtility.captureScreenshot(
                                 result.getMethod().getMethodName());
 
-                if (screenshotPath != null && !screenshotPath.isEmpty()) {
+                if (capture != null
+                        && capture.getBase64() != null
+                        && !capture.getBase64().isEmpty()) {
 
+                    // Embedded as Base64 so the report is self-contained —
+                    // it no longer depends on the screenshots/ folder being
+                    // present next to it. capture.getPath() still lands on
+                    // disk purely for the separate CI artifact/audit trail.
                     ExtentTestManager.getTest()
-                            .addScreenCaptureFromPath(screenshotPath);
+                            .addScreenCaptureFromBase64String(
+                                    capture.getBase64(),
+                                    "Failure Screenshot");
 
                 }
 
