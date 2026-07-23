@@ -44,8 +44,22 @@ public final class ConfigReader {
     private ConfigReader() {
     }
 
+    /**
+     * Returns the value for {@code key}, preferring a -D system property of
+     * the same name (e.g. {@code -Dbrowser=firefox}) over the value in
+     * config-{env}.properties. This is what lets CI pass a browser/flag
+     * per run without editing the properties file.
+     */
     public static String getProperty(String key) {
+
+        String override = System.getProperty(key);
+
+        if (override != null && !override.isBlank()) {
+            return override;
+        }
+
         return properties.getProperty(key);
+
     }
 
     /**
