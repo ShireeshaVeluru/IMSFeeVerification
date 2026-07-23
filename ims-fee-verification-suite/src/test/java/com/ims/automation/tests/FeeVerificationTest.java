@@ -8,6 +8,7 @@ import com.ims.automation.base.BaseTest;
 import com.ims.automation.dataproviders.FeeDataProvider;
 import com.ims.automation.pages.BatchDetails;
 import com.ims.automation.pages.ProgramPage;
+import com.ims.automation.reports.ExtentTestManager;
 import com.ims.automation.utilities.ConfigReader;
 import com.ims.automation.utilities.LoggerUtility;
 
@@ -37,6 +38,15 @@ public class FeeVerificationTest extends BaseTest {
         BatchDetails batchDetails =
                 ProgramPage.open(programUrl)
                         .getBatchDetails(batchName);
+
+        // Record the actual figures in the report on every run — pass or
+        // fail — so a stakeholder scanning the report sees the numbers
+        // directly instead of just a status badge.
+        ExtentTestManager.getTest().info(
+                "Program: " + programName
+                        + " | Batch: " + batchName
+                        + " | Expected Fee: " + expectedFee
+                        + " | Displayed Fee: " + batchDetails.getFee());
 
         Assert.assertEquals(
                 batchDetails.getFee(),
