@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Target Environment
+        description: Environment
         required: true
         default: qa
         type: choice
