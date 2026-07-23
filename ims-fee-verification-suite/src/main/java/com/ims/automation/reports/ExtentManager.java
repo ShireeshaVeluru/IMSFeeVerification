@@ -47,7 +47,7 @@ public final class ExtentManager {
             // System Information
 
             extent.setSystemInfo("Environment",
-                    ConfigReader.getProperty("env"));
+                    ConfigReader.getEnvironment());
 
             extent.setSystemInfo("Browser",
                     ConfigReader.getProperty("browser"));
