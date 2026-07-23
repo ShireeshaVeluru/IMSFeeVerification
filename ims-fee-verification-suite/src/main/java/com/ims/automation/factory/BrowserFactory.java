@@ -29,7 +29,17 @@ public final class BrowserFactory {
             ChromeOptions chromeOptions = new ChromeOptions();
 
             if (headless) {
+
                 chromeOptions.addArguments("--headless=new");
+
+                // --start-maximized below has no effect in headless mode —
+                // there's no real screen to maximize against, so headless
+                // Chrome silently falls back to a small default viewport
+                // (often 800x600). Set an explicit desktop-sized viewport
+                // so screenshots look like a real browser window instead
+                // of a cramped one.
+                chromeOptions.addArguments("--window-size=1920,1080");
+
             }
 
             chromeOptions.addArguments("--start-maximized");
