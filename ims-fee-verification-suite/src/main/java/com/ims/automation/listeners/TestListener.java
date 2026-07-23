@@ -79,15 +79,19 @@ public class TestListener implements ITestListener {
                         && capture.getBase64() != null
                         && !capture.getBase64().isEmpty()) {
 
-                    // Embedded as a data URI so the report is self-contained
-                    // and the "base64 img" viewer actually renders — it no
-                    // longer depends on the screenshots/ folder being
-                    // present next to it. capture.getPath() still lands on
-                    // disk purely for the separate CI artifact/audit trail.
-                    ExtentTestManager.getTest()
-                            .addScreenCaptureFromBase64String(
-                                    capture.getBase64(),
-                                    "Failure Screenshot");
+                    // ExtentReports' built-in addScreenCaptureFromBase64String
+                    // always renders as a clickable "base64 img" badge that
+                    // opens a lightbox — that's fixed behavior in the
+                    // library's template, not something a flag can change.
+                    // Embedding a plain <img> tag as a log entry instead
+                    // shows the picture immediately inline, since
+                    // ExtentReports renders log message HTML unescaped
+                    // (the same mechanism its own category/tag badges use).
+                    ExtentTestManager.getTest().info(
+                            "<b>Failure Screenshot</b><br/>"
+                                    + "<img src='" + capture.getBase64()
+                                    + "' style='max-width:100%; margin-top:6px; "
+                                    + "border:1px solid #ddd; border-radius:4px;' />");
 
                 }
 
