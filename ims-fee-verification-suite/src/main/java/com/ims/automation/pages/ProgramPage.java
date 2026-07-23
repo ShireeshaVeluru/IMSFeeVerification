@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -96,6 +97,16 @@ public class ProgramPage {
             log.info("Checking Batch : {}", actualBatchName);
 
             if (actualBatchName.equalsIgnoreCase(expectedBatchName)) {
+
+                // Center this card in the viewport. The fee assertion runs
+                // in the calling test right after this method returns, so
+                // if it fails, TestListener's screenshot capture will show
+                // the actual batch/fee being checked — not the hero banner
+                // the page loaded scrolled to by default.
+                ((JavascriptExecutor) DriverFactory.getDriver())
+                        .executeScript(
+                                "arguments[0].scrollIntoView({block: 'center'});",
+                                card);
 
                 BatchDetails details = new BatchDetails();
 
