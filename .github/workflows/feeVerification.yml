@@ -38,10 +38,10 @@ jobs:
         working-directory: ims-fee-verification-suite
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -64,7 +64,7 @@ jobs:
 
       - name: Upload Extent Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: extent-report-${{ env.TARGET_ENV }}
           path: ims-fee-verification-suite/reports/
@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload Screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: failure-screenshots-${{ env.TARGET_ENV }}
           path: ims-fee-verification-suite/screenshots/
@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: execution-logs-${{ env.TARGET_ENV }}
           path: ims-fee-verification-suite/logs/
@@ -118,3 +118,8 @@ jobs:
           path: ims-fee-verification-suite/target/surefire-reports/TEST-*.xml
           reporter: java-junit
           fail-on-error: false
+          # Show only the aggregate Passed/Failed/Skipped counts — skip the
+          # per-suite and per-test breakdown (stack traces, individual case
+          # names). Full detail is still available in the uploaded Extent
+          # report and Surefire artifacts if someone needs to dig in.
+          only-summary: 'true'
