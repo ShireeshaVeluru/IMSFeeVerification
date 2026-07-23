@@ -101,25 +101,27 @@ jobs:
           echo "Printing XML files"
           find target -name "*.xml" || true
 
-      # v1 -> v3: v1 still ships a Node 20 runtime (deprecation warning).
-      # path narrowed from *.xml to TEST-*.xml: Maven Surefire writes both
-      # JUnit-format files (TEST-com.foo.Bar.xml — what the java-junit
-      # parser expects) AND TestNG's own summary files (testng-results.xml,
-      # testng-failed.xml) into the same folder. The old *.xml glob picked
-      # up the TestNG summary files too; their schema doesn't match JUnit,
-      # which is exactly what threw "Cannot read properties of undefined
-      # (reading '$')" and the "Processing test results ... failed" error.
       - name: Publish Test Summary
         if: always()
-        continue-on-error: true
-        uses: dorny/test-reporter@v3
-        with:
-          name: Fee Verification Results (${{ env.TARGET_ENV }})
-          path: ims-fee-verification-suite/target/surefire-reports/TEST-*.xml
-          reporter: java-junit
-          fail-on-error: false
-          # Show only the aggregate Passed/Failed/Skipped counts — skip the
-          # per-suite and per-test breakdown (stack traces, individual case
-          # names). Full detail is still available in the uploaded Extent
-          # report and Surefire artifacts if someone needs to dig in.
-          only-summary: 'true'
+        working-directory: ims-fee-verification-suite
+        run: |
+          RESULTS_FILE="target/surefire-reports/testng-results.xml"
+
+          if [ -f "$RESULTS_FILE" ]; then
+            TOTAL=$(grep -oP 'total="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            PASSED=$(grep -oP 'passed="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            FAILED=$(grep -oP 'failed="\K[0-9]+' "$RESULTS_FILE" | head -1)
+            SKIPPED=$(grep -oP 'skipped="\K[0-9]+' "$RESULTS_FILE" | head -1)
+          else
+            TOTAL=0; PASSED=0; FAILED=0; SKIPPED=0
+          fi
+
+          {
+            echo "### Fee Verification Summary (${{ env.TARGET_ENV }})"
+            echo '```'
+            echo "total:${TOTAL}"
+            echo "passed:${PASSED}"
+            echo "failed:${FAILED}"
+            echo "skipped:${SKIPPED}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
