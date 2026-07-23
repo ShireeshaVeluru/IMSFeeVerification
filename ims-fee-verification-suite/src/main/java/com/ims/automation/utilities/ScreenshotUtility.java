@@ -7,11 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 
 import com.ims.automation.constants.FrameworkConstants;
 import com.ims.automation.factory.DriverFactory;
@@ -58,43 +55,9 @@ public final class ScreenshotUtility {
 
     public static Capture captureScreenshot(String testName) {
 
-        WebDriver driver = DriverFactory.getDriver();
-        Dimension originalSize = driver.manage().window().getSize();
-
-        byte[] screenshotBytes;
-
-        try {
-
-            // Resize the window to the page's actual full height/width so
-            // the capture below shows everything top-to-bottom in one shot
-            // (program name, banner, and the Select Batch section) instead
-            // of only whatever happened to fit in the current viewport.
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-
-            long pageHeight = (Long) js.executeScript(
-                    "return Math.max("
-                            + "document.body.scrollHeight, "
-                            + "document.documentElement.scrollHeight);");
-
-            long pageWidth = (Long) js.executeScript(
-                    "return Math.max("
-                            + "document.body.scrollWidth, "
-                            + "document.documentElement.scrollWidth);");
-
-            driver.manage().window().setSize(
-                    new Dimension((int) pageWidth, (int) pageHeight));
-
-            screenshotBytes =
-                    ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-
-        } finally {
-
-            // Always restore the original window size, even if the resize
-            // or capture above failed, so the browser isn't left in a
-            // stretched state for whatever runs next.
-            driver.manage().window().setSize(originalSize);
-
-        }
+        byte[] screenshotBytes =
+                ((TakesScreenshot) DriverFactory.getDriver())
+                        .getScreenshotAs(OutputType.BYTES);
 
         String timestamp = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
