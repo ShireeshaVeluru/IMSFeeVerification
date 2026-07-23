@@ -79,8 +79,9 @@ public class TestListener implements ITestListener {
                         && capture.getBase64() != null
                         && !capture.getBase64().isEmpty()) {
 
-                    // Embedded as Base64 so the report is self-contained —
-                    // it no longer depends on the screenshots/ folder being
+                    // Embedded as a data URI so the report is self-contained
+                    // and the "base64 img" viewer actually renders — it no
+                    // longer depends on the screenshots/ folder being
                     // present next to it. capture.getPath() still lands on
                     // disk purely for the separate CI artifact/audit trail.
                     ExtentTestManager.getTest()
