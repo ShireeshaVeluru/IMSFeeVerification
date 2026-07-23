@@ -20,12 +20,18 @@ public final class ScreenshotUtility {
 
     /**
      * Result of a single screenshot capture: the on-disk path (kept purely
-     * for the CI "failure-screenshots" artifact / audit trail) and the
-     * Base64 encoding of the same bytes, used to embed the image directly
-     * into the Extent HTML report. The report no longer references an
-     * absolute filesystem path — that path only exists on the machine that
-     * generated it, which is why screenshots showed as broken images once
-     * the report was downloaded or opened anywhere else.
+     * for the CI "failure-screenshots" artifact / audit trail) and a
+     * ready-to-use "data:image/png;base64,..." URI of the same bytes, used
+     * to embed the image directly into the Extent HTML report. The report
+     * no longer references an absolute filesystem path — that path only
+     * existed on the machine that generated it, which is why screenshots
+     * showed as broken images once the report was downloaded or opened
+     * anywhere else. The data URI prefix is included here (not left to the
+     * caller) because ExtentReports' base64 image viewer only renders
+     * correctly with the full "data:image/...;base64," prefix present —
+     * without it, the report's "base64 img" badge links to a raw blob the
+     * browser can't interpret as an image and clicking it shows a blank
+     * lightbox.
      */
     public static class Capture {
 
@@ -72,7 +78,9 @@ public final class ScreenshotUtility {
 
         }
 
-        String base64 = Base64.getEncoder().encodeToString(screenshotBytes);
+        String base64 =
+                "data:image/png;base64,"
+                        + Base64.getEncoder().encodeToString(screenshotBytes);
 
         return new Capture(destination, base64);
 
